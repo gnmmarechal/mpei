@@ -1,7 +1,7 @@
 import static java.lang.Math.toIntExact;
 public class BloomFilter
 {
-	static private short[] bloomFilter;
+	static protected short[] bloomFilter; // Protected so that I can access it from CountingFilter
 
 	public BloomFilter(int size)
 	{
