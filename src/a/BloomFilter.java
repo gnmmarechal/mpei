@@ -1,3 +1,4 @@
+import static java.lang.Math.toIntExact;
 public class BloomFilter
 {
 	static private short[] bloomFilter;
@@ -22,7 +23,7 @@ public class BloomFilter
 		for (int i = 0; i < k; i++)
 		{
 			member += String.valueOf(i); //i+1?
-			int index = Dbj2.hash(member)%bloomFilter.length;
+			int index = toIntExact(Djb2.hash(member)%bloomFilter.length);
 			bloomFilter[index] = 1;
 		}
 		
@@ -33,7 +34,7 @@ public class BloomFilter
 		for (int i = 0; i < k; i++)
 		{
 			member += String.valueOf(i); //i+1?
-			int index = Dbj2.hash(member)%bloomFilter.length;
+			int index = toIntExact(Djb2.hash(member)%bloomFilter.length);
 			if (bloomFilter[index] > 0)
 			{
 				bloomFilter[index]--;
@@ -48,7 +49,7 @@ public class BloomFilter
 		for (int i = 0; i < k; i++)
 		{
 			member += String.valueOf(i);
-			int index = Dbj2.hash(member)%bloomFilter.length;
+			int index = toIntExact(Djb2.hash(member)%bloomFilter.length);
 			if (bloomFilter[index] == 0)
 			{
 				exists = false;
