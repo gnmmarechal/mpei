@@ -62,6 +62,39 @@ public class Test // Test class
 		
 		System.out.println(addMem + ": " + C.countMember(k, "TEST"));		
 		
+		// Testing Jaccard Distance
+		
+		ArrayList<ArrayList<Integer>> testList = new ArrayList<ArrayList<Integer>>();
+		ArrayList<Integer> skillListA = new ArrayList<Integer>();
+		
+		skillListA.add(11);
+		skillListA.add(12);
+		skillListA.add(13);
+		skillListA.add(25);
+		
+		ArrayList<Integer> skillListB = new ArrayList<Integer>();
+		
+		skillListB.add(11);
+		skillListB.add(13);
+		skillListB.add(12);
+		skillListB.add(25);		
+		
+		System.out.println("A: " + Arrays.toString(skillListA.toArray()));
+		System.out.println("B: " + Arrays.toString(skillListB.toArray()));		
+		testList.add(skillListA);
+		testList.add(skillListB);
+		
+		double[][] jaccardMatrix = Jaccard.getDistance(2, testList);
+		
+		printGrid(jaccardMatrix);
 	}
+	public static void printGrid(double[][] array)
+	{
+		for (int i = 0; i < array.length; i++)
+		{
+			System.out.println(Arrays.toString(array[i]));
+		}
+		
+	}	
 }
 
