@@ -92,9 +92,10 @@ public class Test // Test class
 		testList.add(skillListB);
 		testList.add(skillListC);
 		
-		double[][] jaccardMatrix = Jaccard.getDistance(3, testList);
+		double[][] jaccardMatrix = Jaccard.getSimilarity(3, testList);
 		
 		printGrid(jaccardMatrix);
+		printGrid(Jaccard.getDistance(3, testList));
 	}
 	public static void printGrid(double[][] array)
 	{
