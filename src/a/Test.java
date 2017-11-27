@@ -75,16 +75,24 @@ public class Test // Test class
 		ArrayList<Integer> skillListB = new ArrayList<Integer>();
 		
 		skillListB.add(11);
-		skillListB.add(13);
+		skillListB.add(145);
 		skillListB.add(12);
-		skillListB.add(25);		
+		skillListB.add(25);
+
+		ArrayList<Integer> skillListC = new ArrayList<Integer>();
+		
+		skillListC.add(11);
+		skillListC.add(145);
+		skillListC.add(12);
+		skillListC.add(25);			
 		
 		System.out.println("A: " + Arrays.toString(skillListA.toArray()));
 		System.out.println("B: " + Arrays.toString(skillListB.toArray()));		
 		testList.add(skillListA);
 		testList.add(skillListB);
+		testList.add(skillListC);
 		
-		double[][] jaccardMatrix = Jaccard.getDistance(2, testList);
+		double[][] jaccardMatrix = Jaccard.getDistance(3, testList);
 		
 		printGrid(jaccardMatrix);
 	}
