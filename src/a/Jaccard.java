@@ -38,32 +38,3 @@ public class Jaccard
 		return jaccardDistance;
 	}
 }
-
-/*
- * 	public static double[][] getDistance(int userNumber, ArrayList<ArrayList<Integer>> dataSet)
-	{
-		double[][] jaccardDistance = new double[userNumber][userNumber];
-		
-		for (int i = 0; i < userNumber; i++)
-		{
-			for (int j = i + 1; j < userNumber; j++)
-			{
-				int intersectionSize = Lists.getIntersection(dataSet.get(i), dataSet.get(i+1)).size();
-				int unionSize = Lists.getUnion(dataSet.get(i), dataSet.get(i+1)).size();
-				System.out.println("UNION SIZE: " + unionSize);
-				if (unionSize != dataSet.get(i).size())
-				{
-					System.out.println("INTERSECTION SIZE: " + intersectionSize);
-					//jaccardDistance[i][j] = (double) intersectionSize/unionSize;
-					System.out.println("I: " + i + " J: " + j + " : " + jaccardDistance[i][j]);
-				}
-				else
-				{
-					jaccardDistance[i][j] = 0;
-				}
-			}
-			
-		}
-		return jaccardDistance;
-	}
-*/
