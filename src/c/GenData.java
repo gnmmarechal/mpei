@@ -6,6 +6,8 @@ public class GenData
 {
 	// Files
 	static File namesFile = new File("names.txt");
+	static File tableAFile = new File("tableA.tb");
+	static File tableBFile = new File("tableB.tb");
 	
 	
 	public static void main(String[] args)
@@ -47,7 +49,7 @@ public class GenData
 		for (int user = 0; user < userNumber; user++)
 		{
 			User tempUser = new User();
-			tempUser.userID = user + 1;
+			tempUser.userID = user;
 			
 			// Name
 			System.out.println("Generating name for user " + tempUser.userID);
@@ -96,5 +98,25 @@ public class GenData
 		
 		// Create the tables and write to file
 		// ...
+		try
+		{
+			PrintWriter pw = new PrintWriter(tableBFile);
+			PrintWriter pw2 = new PrintWriter(tableAFile);
+			for (int i = 0; i < userList.size(); i++)
+			{
+				pw.println(userList.get(i).userName + "," + userList.get(i).userBirthdate + "," + userList.get(i).userTimestamp);
+				for (int j = 0; j < userList.get(i).skillIDs.size(); j++)
+				{
+					pw2.println(userList.get(i).userID + "," + userList.get(i).skillIDs.get(j) + "," + userList.get(i).educationLevelID);
+				}
+				
+			}
+			pw.close();
+			pw2.close();
+			
+			
+		} catch (Exception e){}
+		
+		
 	}
 }
