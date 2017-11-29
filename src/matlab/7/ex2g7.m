@@ -1,5 +1,5 @@
 %Utiliza 2 ficheiros CalcDist.m e ProcDist.m
-udata = load("u.data");
+udata = load("u23.data");
   
 u = udata(1:end, 1:2);
 clear udata;
