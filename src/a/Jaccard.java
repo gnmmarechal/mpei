@@ -3,7 +3,7 @@ import glib.utils.Lists;
 
 public class Jaccard
 {
-	public static double[][] getDistance(int userNumber, ArrayList<ArrayList<Integer>> dataSet)
+	public static double[][] getDistanceMatrix(int userNumber, ArrayList<ArrayList<Integer>> dataSet)
 	{
 		double[][] jaccardDistance = new double[userNumber][userNumber];
 		int startVal = 1;
@@ -12,6 +12,10 @@ public class Jaccard
 			for (int j = 0; j < userNumber; j++)
 			{
 				jaccardDistance[i][j] = startVal;
+				if (i == j)
+				{
+					jaccardDistance[i][i] = 0;
+				}
 			}
 			
 		}
@@ -34,9 +38,9 @@ public class Jaccard
 		return jaccardDistance;
 	}
 	
-	public static double[][] getSimilarity(int userNumber, ArrayList<ArrayList<Integer>> dataSet)
+	public static double[][] getSimilarityMatrix(int userNumber, ArrayList<ArrayList<Integer>> dataSet)
 	{
-		double[][] jaccardSimilarity = getDistance(userNumber, dataSet);
+		double[][] jaccardSimilarity = getDistanceMatrix(userNumber, dataSet);
 		for (int i = 0; i < jaccardSimilarity.length; i++)
 		{
 			for (int j = 0; j < jaccardSimilarity.length; j++)
@@ -47,5 +51,21 @@ public class Jaccard
 		}
 		return jaccardSimilarity;
 		
+	}
+	
+	public static double getDistance(double[][] distanceMatrix, int indexA, int indexB)
+	{
+		if (indexA > distanceMatrix.length || indexB > distanceMatrix.length || indexA < 0 || indexB < 0) return 1;
+		double dist = 1;
+		if (indexA > indexB)
+			dist = distanceMatrix[indexB][indexA];
+		else
+			dist = distanceMatrix[indexA][indexB];
+		return dist;
+	}
+	
+	public static double getSimilarity(double[][] similarityMatrix, int indexA, int indexB)
+	{
+		return getDistance(similarityMatrix, indexA, indexB);
 	}
 }

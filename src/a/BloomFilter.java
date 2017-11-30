@@ -1,25 +1,26 @@
 import static java.lang.Math.toIntExact;
 public class BloomFilter
 {
-	static protected short[] bloomFilter; // Protected so that I can access it from CountingFilter
+	protected short[] bloomFilter; // Protected so that I can access it from CountingFilter
 
 	public BloomFilter(int size)
 	{
 		bloomFilter = new short[size];
 	}
 	
-	static short[] getArray()
+	short[] getArray()
 	{
 		return bloomFilter;
 	}
 	
-	static int getSize()
+	int getSize()
 	{
 		return bloomFilter.length;
 	}
 	
-	static void addMember(int k, String member)
+	void addMember(int k, Object memberObject)
 	{
+		String member = String.valueOf(memberObject);
 		for (int i = 0; i < k; i++)
 		{
 			member += String.valueOf(i); //i+1?
@@ -29,8 +30,9 @@ public class BloomFilter
 		
 	}
 	
-	static void removeMember(int k, String member)
+	void removeMember(int k, Object memberObject)
 	{
+		String member = String.valueOf(memberObject);
 		for (int i = 0; i < k; i++)
 		{
 			member += String.valueOf(i); //i+1?
@@ -43,8 +45,9 @@ public class BloomFilter
 		}		
 	}
 	
-	static boolean existsMember(int k, String member)
+	boolean existsMember(int k, Object memberObject)
 	{
+		String member = String.valueOf(memberObject);		
 		boolean exists = true;
 		for (int i = 0; i < k; i++)
 		{

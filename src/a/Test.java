@@ -93,9 +93,18 @@ public class Test // Test class
 		testList.add(skillListB);
 		testList.add(skillListC);
 		
-		double[][] jaccardMatrix = Jaccard.getDistance(3, testList);
+		double[][] jaccardMatrix = Jaccard.getDistanceMatrix(3, testList);
+		System.out.println(Jaccard.getDistance(jaccardMatrix, 1, 1));
 		
 		printGrid(jaccardMatrix);
+		
+		int userSize = 10;
+		int member = 10;
+		System.out.println("Creating user and testing.");
+		User test = new User(userSize);
+		System.out.println("Adding member: " + member);
+		test.skillIDFilter.addMember(3, member);
+		System.out.println("Does member " + member + " exist? : " + test.skillIDFilter.existsMember(3, 10));
 	}
 	public static void printGrid(double[][] array)
 	{

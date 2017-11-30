@@ -8,8 +8,9 @@ public class CountingFilter extends BloomFilter
 		super(size);
 	}
 	
-	static void addMember(int k, String member)
+	void addMember(int k, Object memberObject)
 	{
+		String member = String.valueOf(memberObject);		
 		for (int i = 0; i < k; i++)
 		{
 			member += String.valueOf(i); //i+1?
@@ -19,8 +20,9 @@ public class CountingFilter extends BloomFilter
 		
 	}
 	
-	static int countMember(int k, String member)
+	int countMember(int k, Object memberObject)
 	{
+		String member = String.valueOf(memberObject);		
 		int count = 0;
 		if (existsMember(k, member))
 		{

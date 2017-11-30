@@ -6,8 +6,7 @@ public class GenData
 {
 	// Files
 	static File namesFile = new File("names.txt");
-	static File tableAFile = new File("tableA.tb");
-	static File tableBFile = new File("tableB.tb");
+	static File tableAFile = new File("table.tb");
 	
 	
 	public static void main(String[] args)
@@ -48,12 +47,28 @@ public class GenData
 		// Create user list
 		for (int user = 0; user < userNumber; user++)
 		{
-			User tempUser = new User();
+			
+
+			// Skill IDs
+			// For now, skills range from 1 to 50
+			Random rand = new Random();
+			int skillAmount = rand.nextInt(14);
+			User tempUser = new User(skillAmount);
+			for (int i = 0; i < skillAmount; i++)
+			{
+				int randSkill = rand.nextInt(50 - 1) + 1;
+				if (tempUser.hasSkill(randSkill))
+				{
+					i--;
+				}
+				else
+					tempUser.addSkill(randSkill);
+			}			
 			tempUser.userID = user;
 			
 			// Name
 			System.out.println("Generating name for user " + tempUser.userID);
-			Random rand = new Random();
+
 			int namesNumber = ThreadLocalRandom.current().nextInt(1, 4 + 1);
 			String sIfOne = "";
 			if (namesNumber != 1) sIfOne = "s";
@@ -77,17 +92,8 @@ public class GenData
 			// Education Level
 			tempUser.educationLevelID = rand.nextInt(6);
 			System.out.println("User " + tempUser.userID + " has education level set to " + tempUser.educationLevelID);
-			// Skill IDs
-			// For now, skills range from 1 to 50
-			int skillAmount = rand.nextInt(14);
-			for (int i = 0; i < skillAmount; i++)
-			{
-				int randSkill = rand.nextInt(50 - 1) + 1;
-				if (tempUser.skillIDs.contains(randSkill))
-					i--;
-				else
-					tempUser.skillIDs.add(randSkill);
-			}
+
+
 			Collections.sort(tempUser.skillIDs); // Program B will write data in a sorted fashion, so that behaviour is reproduced here.
 			System.out.println("User " + tempUser.userID + " has skills set to : " + Arrays.toString(tempUser.skillIDs.toArray()));
 			
@@ -101,18 +107,20 @@ public class GenData
 		// ...
 		try
 		{
-			PrintWriter pw = new PrintWriter(tableBFile);
 			PrintWriter pw2 = new PrintWriter(tableAFile);
 			for (int i = 0; i < userList.size(); i++)
 			{
-				pw.println(userList.get(i).userName + "," + userList.get(i).userBirthdate + "," + userList.get(i).userTimestamp);
+
+				String skillIDString = "";
 				for (int j = 0; j < userList.get(i).skillIDs.size(); j++)
 				{
-					pw2.println(userList.get(i).userID + "," + userList.get(i).skillIDs.get(j) + "," + userList.get(i).educationLevelID);
+					skillIDString += userList.get(i).skillIDs.get(j);
+					if (j < userList.get(i).skillIDs.size() - 1)
+						skillIDString += ";";
 				}
+				pw2.println(userList.get(i).userID + "," + skillIDString + "," + userList.get(i).educationLevelID + "," + userList.get(i).userName + "," + userList.get(i).userBirthdate + "," + userList.get(i).userTimestamp);
 				
 			}
-			pw.close();
 			pw2.close();
 			
 			
