@@ -1,5 +1,5 @@
 Linux
-Programming
+Java
 Windows
 Portuguese
 English
@@ -23,3 +23,11 @@ Orchestra
 Mathematics
 Reading
 Writing
+Ballet
+C
+Lua
+Python
+Objective C
+iOS
+macOS
+C++

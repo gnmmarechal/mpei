@@ -48,6 +48,22 @@ public class Main
 		Job jobA = new Job(jobAIdealUser, "Portuguese-English Translator");
 		log("Job: " + jobA.getTitle() + "\nIdeal User Education Level: " + jobA.idealUser.educationLevelID + "\nIdeal Skillset: " + Arrays.toString(jobA.idealUser.skillIDs.toArray()));
 		
+		// Analyse the data and compare to the ideal user, add to the list of ideal users 
+		
+		// To find perfect matches, it uses the bloom filter. If it doesn't find, it proceeds to analyse similarities
+		
+		List<User> perfectMatches = new ArrayList<User>();
+		for (int i = 0; i < userList.size(); i++)
+		{
+			if (userList.get(i).hasSkill(jobA.idealUser.skillIDs))
+				perfectMatches.add(userList.get(i));
+		}
+		
+		for (User user : perfectMatches)
+		{
+			log("Found perfect match for " + jobA.getTitle() + " :\n User ID: " + user.userID + "\n Name: " + user.userName + "\n Skills: " + Arrays.toString(user.getSkills(skillListArray))); 
+		}
+		
 		
 	}
 	

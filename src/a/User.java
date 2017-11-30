@@ -12,7 +12,7 @@ public class User
 	long userTimestamp;
 	
 	// Other Variables
-	private static int k = 3; // Hash functions to use
+	private static int k = 5; // Hash functions to use (3). Ideally, we'd use 7, but that takes too long, so we decided on 5.
 	
 	public User()
 	{
@@ -23,14 +23,15 @@ public class User
 	
 	public User(int elementNumber)
 	{
-		skillIDFilter = new BloomFilter(elementNumber*100);
+		skillIDFilter = new BloomFilter(elementNumber*10);
 	}
 	
-	public User(int skillIDSize, int userID, ArrayList<Integer> skillIDs, int educationLevelID, String userName, int userBirthdate, long userTimestamp)
+	public User(int userID, ArrayList<Integer> skillIDs, int educationLevelID, String userName, int userBirthdate, long userTimestamp)
 	{
+		this(skillIDs.size());
 		this.userID = userID;
 		this.skillIDs = skillIDs;
-		this.skillIDFilter = new BloomFilter(skillIDSize*10);
+
 		for (int i = 0; i < skillIDs.size(); i++)
 		{
 			skillIDFilter.addMember(k, skillIDs.get(i));
@@ -47,6 +48,23 @@ public class User
 		return skillIDFilter.existsMember(k, skillID);
 	}
 	
+	public boolean hasSkill(int[] skillIDArray)
+	{
+		for (int skill : skillIDArray)
+		{
+			if (!hasSkill(skill))
+				return false;
+		}
+		return true;
+	}
+	
+	public boolean hasSkill(List<Integer> skillIDList)
+	{
+		int[] tempArray = new int[skillIDList.size()];
+		tempArray = skillIDList.stream().mapToInt(i->i).toArray();
+		return hasSkill(tempArray);
+	}
+	
 	public void addSkill(int skillID)
 	{
 		skillIDs.add(skillID);
@@ -59,6 +77,13 @@ public class User
 		{
 			addSkill(skill);
 		}
+	}
+	
+	public void addSkill(List<Integer> skillIDList)
+	{
+		int[] tempArray = new int[skillIDList.size()];
+		tempArray = skillIDList.stream().mapToInt(i->i).toArray();
+		addSkill(tempArray);
 	}
 	
 	public void addSkill(String[] skillNameList,String skillName)
@@ -80,6 +105,29 @@ public class User
 			addSkill(skillNameList, skillNames[i]);
 		}
 		
+	}
+	
+	public String[] getSkills(String[] skillNameList)
+	{
+		String[] tempArray = new String[skillIDs.size()];
+		for (int i = 0; i < skillIDs.size(); i++)
+		{
+			tempArray[i] = skillNameList[skillIDs.get(i)-1];
+		}
+		return tempArray;
+		
+	}
+	
+	public List<Integer> getSkills()
+	{
+		return skillIDs;
+	}
+	
+	public int[] getSkillsArray()
+	{
+		int[] tempArray = new int[skillIDs.size()];
+		tempArray = skillIDs.stream().mapToInt(i->i).toArray();
+		return tempArray;
 	}
 
 }
