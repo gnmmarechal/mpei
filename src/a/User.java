@@ -52,5 +52,34 @@ public class User
 		skillIDs.add(skillID);
 		skillIDFilter.addMember(k, skillID);
 	}
+	
+	public void addSkill(int[] skillIDArray)
+	{
+		for (int skill : skillIDArray)
+		{
+			addSkill(skill);
+		}
+	}
+	
+	public void addSkill(String[] skillNameList,String skillName)
+	{
+		for (int i = 0; i < skillNameList.length; i++)
+		{
+			if (skillNameList[i].equals(skillName))
+			{
+				addSkill(i+1);
+			}
+		}
+		
+	}
+	
+	public void addSkill(String[] skillNameList, String[] skillNames)
+	{
+		for (int i = 0; i < skillNames.length; i++)
+		{
+			addSkill(skillNameList, skillNames[i]);
+		}
+		
+	}
 
 }

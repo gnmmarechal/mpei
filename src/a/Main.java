@@ -3,6 +3,7 @@ import java.util.*;
 
 public class Main
 {
+	
 	 
 	public static void main(String[] args) throws IOException
 	{
@@ -36,6 +37,18 @@ public class Main
 		log("Loaded skill list (" + Misc.getSkillSize() + "):\n" + Arrays.toString(skillList.toArray()));
 		
 		log("Loaded user list (" + userList.size() + ").");
+		
+		// Creating job object
+		User jobAIdealUser = new User();
+		String[] neededSkills = {"Portuguese", "English", "Translation"};
+		String[] skillListArray = new String[skillList.size()];
+		skillListArray = skillList.toArray(skillListArray);
+		jobAIdealUser.educationLevelID = 4;
+		jobAIdealUser.addSkill(skillListArray, neededSkills);
+		Job jobA = new Job(jobAIdealUser, "Portuguese-English Translator");
+		log("Job: " + jobA.getTitle() + "\nIdeal User Education Level: " + jobA.idealUser.educationLevelID + "\nIdeal Skillset: " + Arrays.toString(jobA.idealUser.skillIDs.toArray()));
+		
+		
 	}
 	
 	public static void log(Object args)
