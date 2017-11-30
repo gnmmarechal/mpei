@@ -87,15 +87,15 @@ public class Test // Test class
 		skillListC.add(25);			
 		
 		System.out.println("A: " + Arrays.toString(skillListA.toArray()));
-		System.out.println("B: " + Arrays.toString(skillListB.toArray()));		
+		System.out.println("B: " + Arrays.toString(skillListB.toArray()));
+		System.out.println("C: " + Arrays.toString(skillListC.toArray()));			
 		testList.add(skillListA);
 		testList.add(skillListB);
 		testList.add(skillListC);
 		
-		double[][] jaccardMatrix = Jaccard.getSimilarity(3, testList);
+		double[][] jaccardMatrix = Jaccard.getDistance(3, testList);
 		
 		printGrid(jaccardMatrix);
-		printGrid(Jaccard.getDistance(3, testList));
 	}
 	public static void printGrid(double[][] array)
 	{

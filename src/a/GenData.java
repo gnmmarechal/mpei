@@ -88,6 +88,7 @@ public class GenData
 				else
 					tempUser.skillIDs.add(randSkill);
 			}
+			Collections.sort(tempUser.skillIDs); // Program B will write data in a sorted fashion, so that behaviour is reproduced here.
 			System.out.println("User " + tempUser.userID + " has skills set to : " + Arrays.toString(tempUser.skillIDs.toArray()));
 			
 			// Adding user to the user list

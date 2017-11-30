@@ -11,5 +11,10 @@ public class Djb2
 		}
 		return hash;
 
-	}	
+	}
+	
+	public static long hash(int i)
+	{
+		return (new Integer(i)).hashCode();
+	}
 }
