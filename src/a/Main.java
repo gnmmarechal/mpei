@@ -14,25 +14,9 @@ public class Main
 		File tableFile = new File("table.tb");
 		
 		// Read files
-		Scanner fileScanner = new Scanner(skillListFile);
-		List<String> skillList = new ArrayList<String>();
-		List<String> tableA = new ArrayList<String>();
-		
-		while (fileScanner.hasNextLine())
-		{
-			skillList.add(fileScanner.nextLine());
-		}
-		fileScanner.close();
+		List<String> skillList = readFile(skillListFile);
 		Misc.setSkillSize(skillList.size());
-		fileScanner = new Scanner(tableFile);
-		
-		while (fileScanner.hasNextLine())
-		{
-			tableA.add(fileScanner.nextLine());
-		}
-		fileScanner.close();
-		
-		List<User> userList = readTable(tableA);
+		List<User> userList = readTable(readFile(tableFile));
 		
 		log("Loaded skill list (" + Misc.getSkillSize() + "):\n" + Arrays.toString(skillList.toArray()));
 		
@@ -97,5 +81,17 @@ public class Main
 		
 		
 		return tableData;
+	}
+	
+	static List<String> readFile(File fileToRead) throws IOException
+	{
+		List<String> file = new ArrayList<String>();
+		Scanner fileScanner = new Scanner(fileToRead);
+		while (fileScanner.hasNextLine())
+		{
+			file.add(fileScanner.nextLine());
+		}
+		fileScanner.close();		
+		return file;
 	}
 }
