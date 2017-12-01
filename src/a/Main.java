@@ -56,7 +56,7 @@ public class Main
 		System.out.println(args);
 	}
 	
-	static ArrayList<User> readTable(List<String> table)
+	public static ArrayList<User> readTable(List<String> table)
 	{
 		ArrayList<User> tableData = new ArrayList<User>();
 		
@@ -93,7 +93,7 @@ public class Main
 		return tableData;
 	}
 	
-	static List<String> readFile(File fileToRead) throws IOException
+	public static List<String> readFile(File fileToRead) throws IOException
 	{
 		List<String> file = new ArrayList<String>();
 		Scanner fileScanner = new Scanner(fileToRead);
@@ -120,5 +120,24 @@ public class Main
 		List<String> file = readFile(fileToSort);
 		Collections.sort(file);
 		printFile(fileToSort, file);
+	}
+	
+	public static void addToFile(File fileToPrint, List<String> contents) throws Exception
+	{
+		List<String> file = new ArrayList<String>();
+		if (fileToPrint.exists() && fileToPrint.isFile())
+			file = readFile(fileToPrint);
+		for (String line : contents)
+		{
+			file.add(line);
+		}
+		printFile(fileToPrint, file);
+	}
+	
+	public static void addToFile(File fileToPrint, String line) throws Exception
+	{
+		List<String> lineList = new ArrayList<String>();
+		lineList.add(line);
+		addToFile(fileToPrint, lineList);
 	}
 }

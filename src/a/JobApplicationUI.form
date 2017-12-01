@@ -117,6 +117,14 @@
                                   <Component id="jCheckBox50" alignment="0" min="-2" max="-2" attributes="0"/>
                               </Group>
                           </Group>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Component id="phoneNumberTextBox1" min="-2" pref="31" max="-2" attributes="0"/>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Component id="phoneNumberTextBox2" min="-2" pref="31" max="-2" attributes="0"/>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Component id="phoneNumberTextBox3" min="-2" pref="53" max="-2" attributes="0"/>
+                          </Group>
+                          <Component id="jLabel6" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
@@ -284,7 +292,15 @@
                       <Component id="jCheckBox50" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
-              <EmptySpace pref="103" max="32767" attributes="0"/>
+              <EmptySpace min="-2" pref="19" max="-2" attributes="0"/>
+              <Component id="jLabel6" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="phoneNumberTextBox1" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="phoneNumberTextBox2" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="phoneNumberTextBox3" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace pref="44" max="32767" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="submitButton" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="resetButton" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -380,6 +396,9 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Submit"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="submitButtonActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="resetButton">
       <Properties>
@@ -652,6 +671,17 @@
     <Component class="javax.swing.JCheckBox" name="jCheckBox50">
       <Properties>
         <Property name="text" type="java.lang.String" value="jCheckBox1"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JTextField" name="phoneNumberTextBox1">
+    </Component>
+    <Component class="javax.swing.JTextField" name="phoneNumberTextBox2">
+    </Component>
+    <Component class="javax.swing.JTextField" name="phoneNumberTextBox3">
+    </Component>
+    <Component class="javax.swing.JLabel" name="jLabel6">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Birthdate (dd-mm-yyyy)"/>
       </Properties>
     </Component>
   </SubComponents>

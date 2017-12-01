@@ -120,14 +120,7 @@ public class GenData
 		
 		for (User u : userList)
 		{
-			String skillIDString = "";
-			for (int i = 0; i < u.skillIDs.size(); i++)
-			{
-				skillIDString += u.skillIDs.get(i);
-				if (i < u.skillIDs.size() - 1)
-					skillIDString += ";";
-			}
-			contentToPrint.add(u.userID + "," + skillIDString + "," + u.educationLevelID + "," + u.userName + "," + u.phoneNumber + "," + u.userBirthdate + "," + u.userTimestamp);
+			contentToPrint.add(u.toString());
 			
 		}
 		Main.printFile(tableAFile, contentToPrint);

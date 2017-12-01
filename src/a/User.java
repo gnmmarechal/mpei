@@ -130,5 +130,17 @@ public class User
 		tempArray = skillIDs.stream().mapToInt(i->i).toArray();
 		return tempArray;
 	}
+	
+	public String toString()
+	{
+		String skillIDString = "";
+		for (int i = 0; i < skillIDs.size(); i++)
+		{
+			skillIDString += skillIDs.get(i);
+			if (i < skillIDs.size() - 1)
+				skillIDString += ";";
+		}		
+		return new String(userID + "," + skillIDString + "," + educationLevelID + "," + userName + "," + phoneNumber + "," + userBirthdate + "," + userTimestamp);
+	}
 
 }
