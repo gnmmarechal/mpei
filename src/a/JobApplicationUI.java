@@ -209,11 +209,12 @@ public class JobApplicationUI extends javax.swing.JFrame {
 			jCheckBox47.setText(skillNames.get(46));
 			jCheckBox48.setText(skillNames.get(47));
 			jCheckBox49.setText(skillNames.get(48));
-			jCheckBox50.setText(skillNames.get(49));			
+			jCheckBox50.setText(skillNames.get(49));
 
 		} catch (Exception e)
 		{
-			System.out.println("WARNING: Skill List Error! :" + e.getMessage());
+			showDialog("Error: " + e.getMessage());
+			this.dispatchEvent(new java.awt.event.WindowEvent(this, java.awt.event.WindowEvent.WINDOW_CLOSING));
 		}
         
 
@@ -512,6 +513,11 @@ public class JobApplicationUI extends javax.swing.JFrame {
             }
         });
     }
+    
+    public void showDialog(String dialogText)
+    {
+		javax.swing.JOptionPane.showMessageDialog(this, dialogText);
+	}
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup educationLevelGroup;

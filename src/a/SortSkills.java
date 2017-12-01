@@ -1,5 +1,5 @@
 import java.io.File;
-public class SortSkills
+public class SortSkills // Used just during development, unnecessary for program operation
 {
 	
 	public static void main(String[] args) throws Exception

@@ -1,6 +1,6 @@
 import java.io.File;
 import java.util.*;
-public class GenFields
+public class GenFields // Used just during development, unnecessary for program operation
 {
 	
 	public static void main(String[] args) throws Exception
