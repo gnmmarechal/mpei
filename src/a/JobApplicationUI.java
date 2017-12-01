@@ -568,7 +568,7 @@ public class JobApplicationUI extends javax.swing.JFrame {
         String tableFileName = "table.tb";
         try
         {
-			userTable = Main.readTable(Main.readFile(new File(tableFileName)));
+			userTable = Main.readUserTable(Main.readFile(new File(tableFileName)));
 		} catch (Exception e)
 		{
 			// No user table? Make the table empty

@@ -12,40 +12,47 @@ public class Main
 		// Input files
 		File skillListFile = new File("skills.txt");
 		File tableFile = new File("table.tb");
+		File jobFile = new File("jobs.tb");
 		
 		// Read files
 		List<String> skillList = readFile(skillListFile);
 		Misc.setSkillSize(skillList.size());
-		List<User> userList = readTable(readFile(tableFile));
+		List<User> userList = readUserTable(readFile(tableFile));
+		String[] skillListArray = new String[skillList.size()];
+		skillListArray = skillList.toArray(skillListArray);		
 		
-		log("Loaded skill list (" + Misc.getSkillSize() + "):\n" + Arrays.toString(skillList.toArray()));
+		log("Loaded skill list (" + Misc.getSkillSize() + ").");
 		
 		log("Loaded user list (" + userList.size() + ").");
 		
-		// Creating job object
-		User jobAIdealUser = new User();
-		String[] neededSkills = {"Portuguese", "English", "Translation"};
-		String[] skillListArray = new String[skillList.size()];
-		skillListArray = skillList.toArray(skillListArray);
-		jobAIdealUser.educationLevelID = 4;
-		jobAIdealUser.addSkill(skillListArray, neededSkills);
-		Job jobA = new Job(jobAIdealUser, "Portuguese-English Translator");
-		log("Job: " + jobA.getTitle() + "\nIdeal User Education Level: " + jobA.idealUser.educationLevelID + "\nIdeal Skillset: " + Arrays.toString(jobA.idealUser.skillIDs.toArray()));
+		// Creating job objects from file
+		List<Job> jobList = readJobTable(readFile(jobFile));
 		
-		// Analyse the data and compare to the ideal user, add to the list of ideal users 
+		log("Loaded job list (" + jobList.size() + ").");
 		
-		// To find perfect matches, it uses the bloom filter. If it doesn't find, it proceeds to analyse similarities
-		
-		List<User> perfectMatches = new ArrayList<User>();
-		for (int i = 0; i < userList.size(); i++)
+		List<List<User>> perfectJobMatchList = new ArrayList<List<User>>();
+		for (Job job : jobList)
 		{
-			if (userList.get(i).hasSkill(jobA.idealUser.skillIDs))
-				perfectMatches.add(userList.get(i));
-		}
-		
-		for (User user : perfectMatches)
-		{
-			log("Found perfect match for " + jobA.getTitle() + " :\n User ID: " + user.userID + "\n Name: " + user.userName + "\n Skills: " + Arrays.toString(user.getSkills(skillListArray))); 
+			// Find perfect matches for the job
+			log("Job : " + job.getTitle() + "\nIdeal Skillset : " + Arrays.toString(job.idealUser.getSkills().toArray()));
+			log("=====Perfect Match Search=====");
+			
+			List<User> perfectMatches = new ArrayList<User>();
+			
+			for (int i = 0; i < userList.size(); i++)
+			{
+				if (userList.get(i).hasSkill(job.idealUser.skillIDs))
+					perfectMatches.add(userList.get(i));
+			}
+			
+			// Sort by number of skills and then education level
+			perfectMatches.sort((o1, o2) -> new Integer(o2.skillIDs.size()).compareTo(new Integer(o1.skillIDs.size())));
+			perfectMatches.sort((o1, o2) -> new Integer(o2.educationLevelID).compareTo(new Integer(o1.educationLevelID)));
+			for (User user : perfectMatches)
+			{
+				log("Found perfect match for " + job.getTitle() + " :\n User ID: " + user.userID + "\n Name: " + user.userName + "\b Education Level: " + user.educationLevelID + "\n Skills: " + Arrays.toString(user.getSkills(skillListArray))); 
+			}			
+			perfectJobMatchList.add(perfectMatches);
 		}
 		
 		
@@ -56,7 +63,7 @@ public class Main
 		System.out.println(args);
 	}
 	
-	public static ArrayList<User> readTable(List<String> table)
+	public static ArrayList<User> readUserTable(List<String> table)
 	{
 		ArrayList<User> tableData = new ArrayList<User>();
 		
@@ -64,23 +71,34 @@ public class Main
 		{
 			try
 			{
-				User tempUser = new User(table.size());
 				String line = table.get(i);
 				String[] csvData = line.split(",");
-				tempUser.userID = Integer.valueOf(csvData[0]);
-				tempUser.educationLevelID = Integer.valueOf(csvData[2]);
-				tempUser.userName = csvData[3];
-				tempUser.phoneNumber = csvData[4];
-				tempUser.userBirthdate = Long.valueOf(csvData[5]);
-				tempUser.userTimestamp = Long.valueOf(csvData[6]);
+				int userID = Integer.valueOf(csvData[0]);
+				int educationLevelID = Integer.valueOf(csvData[2]);
+				String userName = csvData[3];
+				String phoneNumber = csvData[4];
+				long userBirthdate = Long.valueOf(csvData[5]);
+				long userTimestamp = Long.valueOf(csvData[6]);
 				csvData = csvData[1].split(";");
+				ArrayList<Integer> skillIDs = new ArrayList<Integer>();
 				if (csvData.length > 0 && !csvData[0].equals(""))
 				{
 					for (int j = 0; j < csvData.length; j++)
 					{
-						tempUser.addSkill(Integer.valueOf(csvData[j]));
+						skillIDs.add(Integer.valueOf(csvData[j]));
 					}
 				}
+				User tempUser = new User();
+				if (skillIDs.size() != 0)
+					tempUser = new User(skillIDs.size());
+				tempUser.userID = userID;
+				tempUser.educationLevelID = educationLevelID;
+				tempUser.userName = userName;
+				tempUser.phoneNumber = phoneNumber;
+				tempUser.userBirthdate = userBirthdate;
+				tempUser.userTimestamp = userTimestamp;
+				tempUser.addSkill(skillIDs);
+				
 				tableData.add(tempUser);
 			} catch (Exception e)
 			{
@@ -90,6 +108,53 @@ public class Main
 		}
 		
 		
+		return tableData;
+	}
+	
+	public static ArrayList<Job> readJobTable(List<String> table)
+	{
+		ArrayList<Job> tableData = new ArrayList<Job>();
+		for (int i = 0; i < table.size(); i++)
+		{
+			try
+			{
+				String[] csvData = table.get(i).split(",");
+				int educationLevelID[] = {Integer.valueOf(csvData[1]), Integer.valueOf(csvData[3])};
+				String[] csvData0 = csvData[0].split(";");
+				String[] csvData1 = csvData[1].split(";");
+				User idealUser = new User(csvData0.length);
+				User minUser = new User(csvData1.length);
+				ArrayList<Integer> skillIDs = new ArrayList<Integer>();
+				if (csvData0.length > 0 && !csvData0[0].equals(""))
+				{
+					for (int j = 0; j < csvData0.length; j++)
+					{
+						skillIDs.add(Integer.valueOf(csvData0[j]));
+					}
+				}				
+				idealUser.addSkill(skillIDs);
+				
+				skillIDs = new ArrayList<Integer>();
+				if (csvData1.length > 0 && !csvData1[0].equals(""))
+				{
+					for (int j = 0; j < csvData1.length; j++)
+					{
+						skillIDs.add(Integer.valueOf(csvData1[j]));
+					}
+				}				
+				minUser.addSkill(skillIDs);
+				minUser.educationLevelID = educationLevelID[1];
+				idealUser.educationLevelID = educationLevelID[0];		
+				
+				
+				
+				tableData.add(new Job(idealUser, minUser, csvData[4]));
+			}
+			catch (Exception e)
+			{
+				log("WARNING: Invalid data. Skipping. Error: " + e.getMessage());
+			}
+		}
 		return tableData;
 	}
 	

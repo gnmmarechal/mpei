@@ -27,7 +27,7 @@ public class User
 		skillIDFilter = new BloomFilter(elementNumber*10);
 	}
 	
-	public User(int userID, ArrayList<Integer> skillIDs, int educationLevelID, String userName, int userBirthdate, long userTimestamp)
+	public User(int userID, ArrayList<Integer> skillIDs, int educationLevelID, String userName, long userBirthdate, long userTimestamp, String phoneNumber)
 	{
 		this(skillIDs.size());
 		this.userID = userID;
@@ -42,6 +42,7 @@ public class User
 		this.userName = userName;
 		this.userBirthdate = userBirthdate;
 		this.userTimestamp = userTimestamp;
+		this.phoneNumber = phoneNumber;
 	}
 	
 	public boolean hasSkill(int skillID)
