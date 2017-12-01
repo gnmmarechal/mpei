@@ -10,6 +10,7 @@ public class User
 	String userName;
 	long userBirthdate; // In seconds
 	long userTimestamp;
+	String phoneNumber;
 	
 	// Other Variables
 	private static int k = 5; // Hash functions to use (3). Ideally, we'd use 7, but that takes too long, so we decided on 5.

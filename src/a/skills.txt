@@ -1,33 +1,51 @@
-Linux
-Java
-Windows
-Portuguese
+Architecture
+BSD
+Ballet
+Bash
+Bass
+Biology
+Biotechnology
+C
+C#
+C++
+Chinese
+Component-level Repair
+Drums
 English
 Esperanto
-Translation
-Soldering
-Component-level Repair
-PR
-Japanese
-Korean
-Chinese
-Plumbing
-Medicine
+Git
 Graphical Design
-Architecture
-Violin
 Guitar
-Bass
-Drums
-Orchestra
-Mathematics
-Reading
-Writing
-Ballet
-C
+Japanese
+Java
+Journalism
+Korean
+Linux
 Lua
-Python
+MIPS Assembly
+MatLab
+Mathematics
+Medicine
+Military
+Network Security
 Objective C
+Octave
+Orchestra
+PR
+Plumbing
+Police
+Portuguese
+Python
+Reading
+Server Maintenance
+Soldering
+Spanish
+Speaking
+Translation
+Unix
+Violin
+Windows
+Writing
+Writing
 iOS
 macOS
-C++

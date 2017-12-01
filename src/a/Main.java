@@ -62,20 +62,30 @@ public class Main
 		
 		for (int i = 0; i < table.size(); i++)
 		{
-			User tempUser = new User(table.size());
-			String line = table.get(i);
-			String[] csvData = line.split(",");
-			tempUser.userID = Integer.valueOf(csvData[0]);
-			tempUser.educationLevelID = Integer.valueOf(csvData[2]);
-			tempUser.userName = csvData[3];
-			tempUser.userBirthdate = Long.valueOf(csvData[4]);
-			tempUser.userTimestamp = Long.valueOf(csvData[5]);
-			csvData = csvData[1].split(";");
-			for (int j = 0; j < csvData.length; j++)
+			try
 			{
-				tempUser.addSkill(Integer.valueOf(csvData[j]));
+				User tempUser = new User(table.size());
+				String line = table.get(i);
+				String[] csvData = line.split(",");
+				tempUser.userID = Integer.valueOf(csvData[0]);
+				tempUser.educationLevelID = Integer.valueOf(csvData[2]);
+				tempUser.userName = csvData[3];
+				tempUser.phoneNumber = csvData[4];
+				tempUser.userBirthdate = Long.valueOf(csvData[5]);
+				tempUser.userTimestamp = Long.valueOf(csvData[6]);
+				csvData = csvData[1].split(";");
+				if (csvData.length > 0 && !csvData[0].equals(""))
+				{
+					for (int j = 0; j < csvData.length; j++)
+					{
+						tempUser.addSkill(Integer.valueOf(csvData[j]));
+					}
+				}
+				tableData.add(tempUser);
+			} catch (Exception e)
+			{
+				log("WARNING: Invalid data. Skipping. Error: " + e.getMessage());
 			}
-			tableData.add(tempUser);
 			
 		}
 		
@@ -93,5 +103,22 @@ public class Main
 		}
 		fileScanner.close();		
 		return file;
+	}
+	
+	public static void printFile(File fileToPrint, List<String> contents) throws Exception
+	{
+		PrintWriter pw = new PrintWriter(fileToPrint);
+		for (String line : contents)
+		{
+			pw.println(line);
+		}
+		pw.close();
+	}
+	
+	public static void alphaSort(File fileToSort) throws Exception
+	{
+		List<String> file = readFile(fileToSort);
+		Collections.sort(file);
+		printFile(fileToSort, file);
 	}
 }

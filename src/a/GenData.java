@@ -9,7 +9,7 @@ public class GenData
 	static File tableAFile = new File("table.tb");
 	
 	
-	public static void main(String[] args)
+	public static void main(String[] args) throws Exception
 	{
 		System.out.println("PROGRAM C (Name Subject to Change) - Version 1.0\n");
 		// Other Variables
@@ -93,7 +93,18 @@ public class GenData
 			tempUser.educationLevelID = rand.nextInt(6);
 			System.out.println("User " + tempUser.userID + " has education level set to " + tempUser.educationLevelID);
 
-
+			
+			// Adding Phone Number
+			char[] allowedCharacters = "0123456789".toCharArray();
+			int length = 9;
+			tempUser.phoneNumber = "";
+			for (int i = 0; i < length; i++)
+			{
+				Random tempRand = new Random();
+				tempUser.phoneNumber += allowedCharacters[tempRand.nextInt(allowedCharacters.length - 0) + 0];
+			}
+			System.out.println("User " + tempUser.userID + " has phone number set to " + tempUser.phoneNumber);
+			
 			Collections.sort(tempUser.skillIDs); // Program B will write data in a sorted fashion, so that behaviour is reproduced here.
 			System.out.println("User " + tempUser.userID + " has skills set to : " + Arrays.toString(tempUser.skillIDs.toArray()));
 			
@@ -104,27 +115,22 @@ public class GenData
 		} 
 		
 		// Create the tables and write to file
-		// ...
-		try
+		
+		List<String> contentToPrint = new ArrayList<String>();
+		
+		for (User u : userList)
 		{
-			PrintWriter pw2 = new PrintWriter(tableAFile);
-			for (int i = 0; i < userList.size(); i++)
+			String skillIDString = "";
+			for (int i = 0; i < u.skillIDs.size(); i++)
 			{
-
-				String skillIDString = "";
-				for (int j = 0; j < userList.get(i).skillIDs.size(); j++)
-				{
-					skillIDString += userList.get(i).skillIDs.get(j);
-					if (j < userList.get(i).skillIDs.size() - 1)
-						skillIDString += ";";
-				}
-				pw2.println(userList.get(i).userID + "," + skillIDString + "," + userList.get(i).educationLevelID + "," + userList.get(i).userName + "," + userList.get(i).userBirthdate + "," + userList.get(i).userTimestamp);
-				
+				skillIDString += u.skillIDs.get(i);
+				if (i < u.skillIDs.size() - 1)
+					skillIDString += ";";
 			}
-			pw2.close();
+			contentToPrint.add(u.userID + "," + skillIDString + "," + u.educationLevelID + "," + u.userName + "," + u.phoneNumber + "," + u.userBirthdate + "," + u.userTimestamp);
 			
-			
-		} catch (Exception e){}
+		}
+		Main.printFile(tableAFile, contentToPrint);
 		
 		
 	}
