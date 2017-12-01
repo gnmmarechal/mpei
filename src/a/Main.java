@@ -1,6 +1,7 @@
 import java.io.*;
 import java.util.*;
-
+import info.debatty.java.lsh.MinHash;
+import java.util.stream.Collectors;
 public class Main
 {
 	
@@ -33,26 +34,84 @@ public class Main
 		List<List<User>> perfectJobMatchList = new ArrayList<List<User>>();
 		for (Job job : jobList)
 		{
-			// Find perfect matches for the job
+			// Find perfect matches for the job (first find minimum matches and then perfect matches. This eliminates all users that aren't necessary)
 			log("Job : " + job.getTitle() + "\nIdeal Skillset : " + Arrays.toString(job.idealUser.getSkills().toArray()));
 			log("=====Perfect Match Search=====");
 			
-			List<User> perfectMatches = new ArrayList<User>();
+			List<User> minimumMatchCandidates = new ArrayList<User>();
+			List<User> minimumMatches = new ArrayList<User>();
 			
 			for (int i = 0; i < userList.size(); i++)
 			{
-				if (userList.get(i).hasSkill(job.idealUser.skillIDs))
-					perfectMatches.add(userList.get(i));
+				if (userList.get(i).hasSkill(job.minUser.skillIDs))
+					minimumMatchCandidates.add(userList.get(i));
 			}
+			
+			for (int i = 0; i < minimumMatchCandidates.size(); i++)
+			{
+				if (minimumMatchCandidates.get(i).hasSkillExact(job.minUser.skillIDs))
+					minimumMatches.add(minimumMatchCandidates.get(i));				
+			}
+			
+			
+			List<User> perfectMatchCandidates = new ArrayList<User>();
+			
+			for (int i = 0; i < minimumMatches.size(); i++)
+			{
+				if (minimumMatches.get(i).hasSkill(job.idealUser.skillIDs))
+					perfectMatchCandidates.add(minimumMatches.get(i));
+			}
+			
+			// Double-check the users using a non-probabilistic method (the Bloom Filter can have false positives, but not false negatives, so we know that
+			// every user in perfectMatchCandidates is possibly correct, but all of the others are definitely not perfect matches.
+			// The exact method is slower for huge sets of data, but the list is also smaller because the probabilistic method was ran before.
+			// The bloom filter may not be faster than the array for only 50 elements at most, however. --> THIS IS IMPORTANT.
+			List<User> perfectMatches = new ArrayList<User>();
+			
+			for (int i = 0; i < perfectMatchCandidates.size(); i++)
+			{
+				if (perfectMatchCandidates.get(i).hasSkillExact(job.idealUser.skillIDs))
+				{
+					perfectMatches.add(perfectMatchCandidates.get(i));
+				}
+			}
+			
 			
 			// Sort by number of skills and then education level
 			perfectMatches.sort((o1, o2) -> new Integer(o2.skillIDs.size()).compareTo(new Integer(o1.skillIDs.size())));
 			perfectMatches.sort((o1, o2) -> new Integer(o2.educationLevelID).compareTo(new Integer(o1.educationLevelID)));
 			for (User user : perfectMatches)
 			{
-				log("Found perfect match for " + job.getTitle() + " :\n User ID: " + user.userID + "\n Name: " + user.userName + "\b Education Level: " + user.educationLevelID + "\n Skills: " + Arrays.toString(user.getSkills(skillListArray))); 
+				log("Found perfect match for " + job.getTitle() + " :\n User ID: " + user.userID + "\n Name: " + user.userName + "\n Education Level: " + user.educationLevelID + "\n Skills: " + Arrays.toString(user.getSkills(skillListArray))); 
 			}			
 			perfectJobMatchList.add(perfectMatches);
+			// log("Min Candidates: " + minimumMatchCandidates.size() + "\nMinimum Correct: " + minimumMatches.size() + "\nPerfect Candidates: " + perfectMatchCandidates.size() + "\nPerfects: " + perfectMatches.size());
+			// log("Min False Positive Chance: " + String.valueOf(1.0 - (double) minimumMatches.size()/minimumMatchCandidates.size()) + "\nPerfect False Positive Chance: " + String.valueOf(1.0 - (double) perfectMatches.size()/perfectMatchCandidates.size()));
+		
+			// Similarity Search
+			
+			log("=====Similar Match Search=====");
+			
+			userList.removeAll(perfectMatches);
+			List<Set<Integer>> skillsDoc = new ArrayList<Set<Integer>>();
+			for (User user : userList)
+			{
+				Set<Integer> hSet = new HashSet<Integer>(user.getSkills());
+				skillsDoc.add(hSet);
+			}
+			
+			int signatureSize = 20; // Chosen as it is a value slightly below the average set size.
+			MinHash mh = new MinHash(signatureSize, userList.size());
+			
+
+			int[][] sigList = new int[skillsDoc.size()][signatureSize];
+			for (int i = 0; i < skillsDoc.size(); i++)
+			{
+				sigList[i] = mh.signature(skillsDoc.get(i));
+				
+			}
+			
+			System.out.println(MinHash.similarity(sigList[0], sigList[1]));
 		}
 		
 		

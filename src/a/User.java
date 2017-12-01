@@ -13,7 +13,7 @@ public class User
 	String phoneNumber;
 	
 	// Other Variables
-	private static int k = 5; // Hash functions to use (3). Ideally, we'd use 7, but that takes too long, so we decided on 5.
+	private static int k = 9; // Hash functions to use (3). The formula k = m/n * ln(2) tells us that the optimal k is 7.
 	
 	public User()
 	{
@@ -65,6 +65,28 @@ public class User
 		int[] tempArray = new int[skillIDList.size()];
 		tempArray = skillIDList.stream().mapToInt(i->i).toArray();
 		return hasSkill(tempArray);
+	}
+
+	public boolean hasSkillExact(int skillID)
+	{
+		return skillIDs.contains(skillID);
+	}
+		
+	public boolean hasSkillExact(int[] skillIDArray)
+	{
+		for (int skill : skillIDArray)
+		{
+			if (!hasSkillExact(skill))
+				return false;
+		}
+		return true;
+	}	
+	
+	public boolean hasSkillExact(List<Integer> skillIDList)
+	{
+		int[] tempArray = new int[skillIDList.size()];
+		tempArray = skillIDList.stream().mapToInt(i->i).toArray();
+		return hasSkillExact(tempArray);		
 	}
 	
 	public void addSkill(int skillID)

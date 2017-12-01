@@ -114,5 +114,13 @@ public class Test // Test class
 		}
 		
 	}	
+	
+	public static void printGrid(long[][] array)
+	{
+		for (int i = 0; i < array.length; i++)
+		{
+			System.out.println(Arrays.toString(array[i]));
+		}		
+	}
 }
 
