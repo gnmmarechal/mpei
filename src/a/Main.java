@@ -1,7 +1,6 @@
 import java.io.*;
 import java.util.*;
-import info.debatty.java.lsh.MinHash;
-import java.util.stream.Collectors;
+import glib.utils.Lists;
 public class Main
 {
 	
@@ -17,14 +16,18 @@ public class Main
 		
 		// Read files
 		List<String> skillList = readFile(skillListFile);
+		
 		Misc.setSkillSize(skillList.size());
-		List<User> userList = readUserTable(readFile(tableFile));
+		
+		List<User> userListFinal = readUserTable(readFile(tableFile));
+		
 		String[] skillListArray = new String[skillList.size()];
+		
 		skillListArray = skillList.toArray(skillListArray);		
 		
 		log("Loaded skill list (" + Misc.getSkillSize() + ").");
 		
-		log("Loaded user list (" + userList.size() + ").");
+		log("Loaded user list (" + userListFinal.size() + ").");
 		
 		// Creating job objects from file
 		List<Job> jobList = readJobTable(readFile(jobFile));
@@ -32,8 +35,17 @@ public class Main
 		log("Loaded job list (" + jobList.size() + ").");
 		
 		List<List<User>> perfectJobMatchList = new ArrayList<List<User>>();
+		
+		List<List<User>> similarityOrderedMatchList = new ArrayList<List<User>>();
+		
+
 		for (Job job : jobList)
 		{
+			List<User> userList = new ArrayList<User>();
+			for (User u : userListFinal)
+			{
+				userList.add(u);
+			}
 			// Find perfect matches for the job (first find minimum matches and then perfect matches. This eliminates all users that aren't necessary)
 			log("Job : " + job.getTitle() + "\nIdeal Skillset : " + Arrays.toString(job.idealUser.getSkills().toArray()));
 			log("=====Perfect Match Search=====");
@@ -41,16 +53,20 @@ public class Main
 			List<User> minimumMatchCandidates = new ArrayList<User>();
 			List<User> minimumMatches = new ArrayList<User>();
 			
-			for (int i = 0; i < userList.size(); i++)
+			for (User u : userList)
 			{
-				if (userList.get(i).hasSkill(job.minUser.skillIDs))
-					minimumMatchCandidates.add(userList.get(i));
+				if (u.hasSkill(job.minUser.skillIDs))
+				{
+					minimumMatchCandidates.add(u);
+				}
 			}
 			
 			for (int i = 0; i < minimumMatchCandidates.size(); i++)
 			{
-				if (minimumMatchCandidates.get(i).hasSkillExact(job.minUser.skillIDs))
-					minimumMatches.add(minimumMatchCandidates.get(i));				
+				if (minimumMatchCandidates.get(i).hasSkill(job.minUser.skillIDs))
+				{
+					minimumMatches.add(minimumMatchCandidates.get(i));
+				}			
 			}
 			
 			
@@ -59,7 +75,10 @@ public class Main
 			for (int i = 0; i < minimumMatches.size(); i++)
 			{
 				if (minimumMatches.get(i).hasSkill(job.idealUser.skillIDs))
+				{
 					perfectMatchCandidates.add(minimumMatches.get(i));
+					log("Perf cand");
+				}	
 			}
 			
 			// Double-check the users using a non-probabilistic method (the Bloom Filter can have false positives, but not false negatives, so we know that
@@ -87,51 +106,64 @@ public class Main
 			perfectJobMatchList.add(perfectMatches);
 			// log("Min Candidates: " + minimumMatchCandidates.size() + "\nMinimum Correct: " + minimumMatches.size() + "\nPerfect Candidates: " + perfectMatchCandidates.size() + "\nPerfects: " + perfectMatches.size());
 			// log("Min False Positive Chance: " + String.valueOf(1.0 - (double) minimumMatches.size()/minimumMatchCandidates.size()) + "\nPerfect False Positive Chance: " + String.valueOf(1.0 - (double) perfectMatches.size()/perfectMatchCandidates.size()));
-		
+			
+			log("Minimum Matches Found: " + minimumMatches.size());
+			log("Perfect Matches found: " + perfectMatches.size());
 			// Similarity Search
 			
 			log("=====Similar Match Search=====");
 			
 			// Compares the similarity between the ideal user and the skill intersection of the ideal user and the real one, then sorts by similarity and then by number of skills.
 			userList.removeAll(perfectMatches);
-			List<Set<Integer>> skillsDoc = new ArrayList<Set<Integer>>();
+			userList.removeAll(Lists.getIntersection(userList, minimumMatches));
+			
 			List<List<Integer>> skillsDocList = new ArrayList<List<Integer>>();
+			
 			for (User user : userList)
 			{
-				Set<Integer> hSet = new HashSet<Integer>(user.getSkills());
 				List<Integer> newDoc = new ArrayList<Integer>(user.getSkills());
 				skillsDocList.add(newDoc);
-				skillsDoc.add(hSet);
 			}
 			
-			int signatureSize = 0; // Chosen as it is a value slightly below the average set size.
-			for (List<Integer> skills : skillsDocList)
+			if (skillsDocList.size() != 0)
 			{
-				signatureSize += skills.size();
-			}
-			signatureSize = signatureSize/skillsDocList.size();
-			// MinHash mh = new MinHash(signatureSize, userList.size());
-
-			int[][] sigList = new int[skillsDoc.size()][signatureSize];
-			for (int i = 0; i < skillsDoc.size(); i++)
-			{
-				// sigList[i] = mh.signature(skillsDoc.get(i));
-				sigList[i] = MinHash2.signature(signatureSize, userList.size(), skillsDocList.get(i));
+				int signatureSize = 1; 
+	
+				for (List<Integer> skills : skillsDocList)
+				{
+					signatureSize += skills.size();
+				}
+				signatureSize += job.idealUser.skillIDs.size();
+				signatureSize = signatureSize/skillsDocList.size() - 1; // Signature size is the average skill number -1
+				log(signatureSize);
+				if (signatureSize < 1)
+					signatureSize = 1;
+	
+				int[][] sigList = new int[skillsDocList.size()][signatureSize];
 				
+				
+				for (int i = 0; i < skillsDocList.size(); i++) // Gets the signature of the intersection between the ideal user and each user
+				{
+					sigList[i] = MinHash2.signature(signatureSize, userList.size(), Lists.getIntersection(skillsDocList.get(i), job.idealUser.skillIDs));
+					
+				}
+				
+				// Get signature for the ideal user
+				int[] idealSignature = MinHash2.signature(signatureSize, userList.size(), job.idealUser.skillIDs);
+				
+				// Compute similarity for every use
+				double simList[] = new double[sigList.length];
+				for (int i = 0; i < simList.length; i++)
+				{
+					simList[i] = Jaccard.getSimilarity(idealSignature, sigList[i]);
+				}
+				System.out.println(Arrays.toString(simList));
 			}
-			System.out.println(Arrays.toString(skillsDoc.toArray()));
-			System.out.println(Arrays.toString(sigList));
-			int c = -1;
-			for (int[] sig : sigList)
+			else
 			{
-				c++;
-				System.out.println(Arrays.toString(sigList[c]));
+				log("Empty list!");
 			}
-			System.out.println(Jaccard.getSimilarity(sigList[0],sigList[1]));
-			System.out.println(Arrays.toString(sigList[0]));
-			System.out.println(Arrays.toString(sigList[1]));			
 		}
-		
 		
 	}
 	
@@ -197,8 +229,9 @@ public class Main
 			{
 				String[] csvData = table.get(i).split(",");
 				int educationLevelID[] = {Integer.valueOf(csvData[1]), Integer.valueOf(csvData[3])};
+				
 				String[] csvData0 = csvData[0].split(";");
-				String[] csvData1 = csvData[1].split(";");
+				String[] csvData1 = csvData[2].split(";");
 				User idealUser = new User(csvData0.length);
 				User minUser = new User(csvData1.length);
 				ArrayList<Integer> skillIDs = new ArrayList<Integer>();
@@ -222,7 +255,6 @@ public class Main
 				minUser.addSkill(skillIDs);
 				minUser.educationLevelID = educationLevelID[1];
 				idealUser.educationLevelID = educationLevelID[0];		
-				
 				
 				
 				tableData.add(new Job(idealUser, minUser, csvData[4]));

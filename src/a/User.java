@@ -35,7 +35,7 @@ public class User
 
 		for (int i = 0; i < skillIDs.size(); i++)
 		{
-			skillIDFilter.addMember(k, skillIDs.get(i));
+			addSkill(skillIDs.get(i));
 		}
 		
 		this.educationLevelID = educationLevelID;
@@ -55,7 +55,9 @@ public class User
 		for (int skill : skillIDArray)
 		{
 			if (!hasSkill(skill))
+			{
 				return false;
+			}
 		}
 		return true;
 	}
