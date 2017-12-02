@@ -3,6 +3,7 @@ public class Job
 	public User idealUser;
 	private String jobTitle;
 	public User minUser;
+	public double minSimIndex = 0.0;
 	
 	public Job()
 	{
@@ -32,6 +33,11 @@ public class Job
 		this.jobTitle = jobTitle;
 	}
 	
+	public Job(User idealUser, User minUser, String jobTitle, double minSimIndex)
+	{
+		this(idealUser, minUser, jobTitle);
+		this.minSimIndex = minSimIndex;
+	}
 	public String getTitle()
 	{
 		return jobTitle;

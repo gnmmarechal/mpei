@@ -12,8 +12,11 @@ public class User
 	long userTimestamp;
 	String phoneNumber;
 	
+	// Used only for sorting
+	double similarityIndex = -1;
+	
 	// Other Variables
-	private static int k = 10; // Hash functions to use (3). The formula k = m/n * ln(2) tells us that the optimal k is 7.
+	private static int k = 7; // Hash functions to use (3). The formula k = m/n * ln(2) tells us that the optimal k is 7.
 	
 	public User()
 	{

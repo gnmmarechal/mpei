@@ -1,6 +1,7 @@
 import java.io.*;
 import java.util.*;
 import glib.utils.Lists;
+import java.util.stream.Collectors;
 public class Main
 {
 	
@@ -77,7 +78,6 @@ public class Main
 				if (minimumMatches.get(i).hasSkill(job.idealUser.skillIDs))
 				{
 					perfectMatchCandidates.add(minimumMatches.get(i));
-					log("Perf cand");
 				}	
 			}
 			
@@ -97,18 +97,41 @@ public class Main
 			
 			
 			// Sort by number of skills and then education level
-			perfectMatches.sort((o1, o2) -> new Integer(o2.skillIDs.size()).compareTo(new Integer(o1.skillIDs.size())));
-			perfectMatches.sort((o1, o2) -> new Integer(o2.educationLevelID).compareTo(new Integer(o1.educationLevelID)));
+
+				
+			List<List<User>> tempList = perfectMatches.stream()
+				.collect(Collectors.groupingBy(x -> x.educationLevelID))
+				.entrySet().stream()
+				.map(e -> { List<User> c = new ArrayList<User>(); c.addAll(e.getValue()); return c; })
+				.collect(Collectors.toList());
+			tempList.sort((o1, o2) -> new Integer(o2.get(0).educationLevelID).compareTo(new Integer(o1.get(0).educationLevelID)));
+			perfectMatches = 
+				tempList.stream()
+				.flatMap(List::stream)
+				.collect(Collectors.toList());	
+			tempList = perfectMatches.stream()
+				.collect(Collectors.groupingBy(x -> x.skillIDs.size()))
+				.entrySet().stream()
+				.map(e -> { List<User> c = new ArrayList<User>(); c.addAll(e.getValue()); return c; })
+				.collect(Collectors.toList());
+			tempList.sort((o1, o2) -> new Integer(o2.get(0).skillIDs.size()).compareTo(new Integer(o1.get(0).skillIDs.size())));
+			perfectMatches = 
+				tempList.stream()
+				.flatMap(List::stream)
+				.collect(Collectors.toList());					
 			for (User user : perfectMatches)
 			{
-				log("Found perfect match for " + job.getTitle() + " :\n User ID: " + user.userID + "\n Name: " + user.userName + "\n Education Level: " + user.educationLevelID + "\n Skills: " + Arrays.toString(user.getSkills(skillListArray))); 
+				log("Found perfect match for " + job.getTitle() + " :\n User ID: " + user.userID + "\n Name: " + user.userName + "\n Education Level: " + user.educationLevelID + "\n Skill Number: " + user.skillIDs.size() + "\n Skills: " + Arrays.toString(user.getSkills(skillListArray))); 
 			}			
 			perfectJobMatchList.add(perfectMatches);
 			// log("Min Candidates: " + minimumMatchCandidates.size() + "\nMinimum Correct: " + minimumMatches.size() + "\nPerfect Candidates: " + perfectMatchCandidates.size() + "\nPerfects: " + perfectMatches.size());
 			// log("Min False Positive Chance: " + String.valueOf(1.0 - (double) minimumMatches.size()/minimumMatchCandidates.size()) + "\nPerfect False Positive Chance: " + String.valueOf(1.0 - (double) perfectMatches.size()/perfectMatchCandidates.size()));
 			
+			log("Minimum Match Candidates: " + minimumMatchCandidates.size());
 			log("Minimum Matches Found: " + minimumMatches.size());
+			log("Perfect Match Candidates: " + perfectMatchCandidates.size());
 			log("Perfect Matches found: " + perfectMatches.size());
+			
 			// Similarity Search
 			
 			log("=====Similar Match Search=====");
@@ -117,17 +140,17 @@ public class Main
 			userList.removeAll(perfectMatches);
 			userList.removeAll(Lists.getIntersection(userList, minimumMatches));
 			
-			List<List<Integer>> skillsDocList = new ArrayList<List<Integer>>();
 			
-			for (User user : userList)
+			if (userList.size() != 0)
 			{
-				List<Integer> newDoc = new ArrayList<Integer>(user.getSkills());
-				skillsDocList.add(newDoc);
-			}
-			
-			if (skillsDocList.size() != 0)
-			{
-				int signatureSize = 1; 
+				List<List<Integer>> skillsDocList = new ArrayList<List<Integer>>();
+				
+				for (User user : userList)
+				{
+					List<Integer> newDoc = new ArrayList<Integer>(user.getSkills());
+					skillsDocList.add(newDoc);
+				}				
+				int signatureSize = 0; 
 	
 				for (List<Integer> skills : skillsDocList)
 				{
@@ -135,10 +158,11 @@ public class Main
 				}
 				signatureSize += job.idealUser.skillIDs.size();
 				signatureSize = signatureSize/skillsDocList.size() - 1; // Signature size is the average skill number -1
-				log(signatureSize);
+
 				if (signatureSize < 1)
 					signatureSize = 1;
-	
+				
+				log("Using signature size: " + signatureSize);
 				int[][] sigList = new int[skillsDocList.size()][signatureSize];
 				
 				
@@ -152,17 +176,75 @@ public class Main
 				int[] idealSignature = MinHash2.signature(signatureSize, userList.size(), job.idealUser.skillIDs);
 				
 				// Compute similarity for every use
-				double simList[] = new double[sigList.length];
-				for (int i = 0; i < simList.length; i++)
+				for (int i = 0; i < sigList.length; i++)
 				{
-					simList[i] = Jaccard.getSimilarity(idealSignature, sigList[i]);
+					userList.get(i).similarityIndex = Jaccard.getSimilarity(idealSignature, sigList[i]);
 				}
-				System.out.println(Arrays.toString(simList));
+				// Sort by similarity index, number of skills and then education level
+				// List<List<User>> tempList = new ArrayList<List<User>>();
+
+
+				tempList = userList.stream()
+					.collect(Collectors.groupingBy(x -> x.educationLevelID))
+					.entrySet().stream()
+					.map(e -> { List<User> c = new ArrayList<User>(); c.addAll(e.getValue()); return c; })
+					.collect(Collectors.toList());
+				tempList.sort((o1, o2) -> new Integer(o2.get(0).educationLevelID).compareTo(new Integer(o1.get(0).educationLevelID)));
+				userList = 
+					tempList.stream()
+					.flatMap(List::stream)
+					.collect(Collectors.toList());
+				
+				tempList = userList.stream()
+					.collect(Collectors.groupingBy(x -> x.skillIDs.size()))
+					.entrySet().stream()
+					.map(e -> { List<User> c = new ArrayList<User>(); c.addAll(e.getValue()); return c; })
+					.collect(Collectors.toList());
+				tempList.sort((o1, o2) -> new Integer(o2.get(0).skillIDs.size()).compareTo(new Integer(o1.get(0).skillIDs.size())));
+				userList = 
+					tempList.stream()
+					.flatMap(List::stream)
+					.collect(Collectors.toList());				
+
+				tempList = userList.stream()
+					.collect(Collectors.groupingBy(x -> x.similarityIndex))
+					.entrySet().stream()
+					.map(e -> { List<User> c = new ArrayList<User>(); c.addAll(e.getValue()); return c; })
+					.collect(Collectors.toList());
+				tempList.sort((o1, o2) -> new Double(o2.get(0).similarityIndex).compareTo(new Double(o1.get(0).similarityIndex)));
+				userList = 
+					tempList.stream()
+					.flatMap(List::stream)
+					.collect(Collectors.toList());					
+				
+				for (User u : userList)
+				{
+					log("User data for job " + job.getTitle() + " :\n User ID: " + u.userID + "\n Name: " + u.userName + "\n Education Level: " + u.educationLevelID + "\n Skill Number: " + u.skillIDs.size() + "\n Skills: " + Arrays.toString(u.getSkills(skillListArray)) + "\n Similarity Index: " + u.similarityIndex); 
+				}
+				
+				log("Current user list size: " + userList.size());
+				
+				// Remove people with similarity below minSimilarity
+				List<User> prepList = new ArrayList<User>();
+				
+				for (User u : userList)
+				{
+					if (u.similarityIndex >= job.minSimIndex)
+						prepList.add(u);
+				}
+				
+				userList = new ArrayList<User>();
+				
+				for (User u : prepList)
+					userList.add(u);
+				log("Removed users with similarity index below " + job.minSimIndex + ".\nFinal user list size: " + userList.size());
+				
 			}
 			else
 			{
-				log("Empty list!");
+				log("Empty List!");
 			}
+			similarityOrderedMatchList.add(userList);
 		}
 		
 	}
@@ -257,7 +339,7 @@ public class Main
 				idealUser.educationLevelID = educationLevelID[0];		
 				
 				
-				tableData.add(new Job(idealUser, minUser, csvData[4]));
+				tableData.add(new Job(idealUser, minUser, csvData[4], Double.valueOf(csvData[5])));
 			}
 			catch (Exception e)
 			{
