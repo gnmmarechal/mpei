@@ -13,7 +13,7 @@ public class User
 	String phoneNumber;
 	
 	// Other Variables
-	private static int k = 9; // Hash functions to use (3). The formula k = m/n * ln(2) tells us that the optimal k is 7.
+	private static int k = 10; // Hash functions to use (3). The formula k = m/n * ln(2) tells us that the optimal k is 7.
 	
 	public User()
 	{

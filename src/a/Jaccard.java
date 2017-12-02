@@ -1,6 +1,6 @@
 import java.util.*;
 import glib.utils.Lists;
-
+import java.util.stream.Collectors;
 public class Jaccard
 {
 	public static double[][] getDistanceMatrix(int userNumber, ArrayList<ArrayList<Integer>> dataSet)
@@ -67,5 +67,24 @@ public class Jaccard
 	public static double getSimilarity(double[][] similarityMatrix, int indexA, int indexB)
 	{
 		return getDistance(similarityMatrix, indexA, indexB);
+	}
+	
+	public static double getSimilarity(int[] setA, int[] setB)
+	{
+		// Jaccard Similarity : J(A, B) = |A ∩ B| / |A ∪ B|
+		
+		List<Integer> listA = Arrays.stream(setA).boxed().collect(Collectors.toList());
+		List<Integer> listB = Arrays.stream(setB).boxed().collect(Collectors.toList());
+		return getSimilarity(listA, listB);
+	}
+	
+	public static double getSimilarity(List<Integer> listA, List<Integer> listB)
+	{
+		int intersectionSize = Lists.getIntersection(listA, listB).size();
+		int unionSize = Lists.getUnion(listA, listB).size();
+		// double J = (double) Lists.getIntersection(listA, listB).size()/Lists.getUnion(listA, listB).size();
+		// double J = ((double) intersectionSize/((double) listA.size() + (double) listB.size() - (double) intersectionSize));
+		double J = (double) intersectionSize/ (double) unionSize;
+		return J;
 	}
 }

@@ -92,26 +92,44 @@ public class Main
 			
 			log("=====Similar Match Search=====");
 			
+			// Compares the similarity between the ideal user and the skill intersection of the ideal user and the real one, then sorts by similarity and then by number of skills.
 			userList.removeAll(perfectMatches);
 			List<Set<Integer>> skillsDoc = new ArrayList<Set<Integer>>();
+			List<List<Integer>> skillsDocList = new ArrayList<List<Integer>>();
 			for (User user : userList)
 			{
 				Set<Integer> hSet = new HashSet<Integer>(user.getSkills());
+				List<Integer> newDoc = new ArrayList<Integer>(user.getSkills());
+				skillsDocList.add(newDoc);
 				skillsDoc.add(hSet);
 			}
 			
-			int signatureSize = 20; // Chosen as it is a value slightly below the average set size.
-			MinHash mh = new MinHash(signatureSize, userList.size());
-			
+			int signatureSize = 0; // Chosen as it is a value slightly below the average set size.
+			for (List<Integer> skills : skillsDocList)
+			{
+				signatureSize += skills.size();
+			}
+			signatureSize = signatureSize/skillsDocList.size();
+			// MinHash mh = new MinHash(signatureSize, userList.size());
 
 			int[][] sigList = new int[skillsDoc.size()][signatureSize];
 			for (int i = 0; i < skillsDoc.size(); i++)
 			{
-				sigList[i] = mh.signature(skillsDoc.get(i));
+				// sigList[i] = mh.signature(skillsDoc.get(i));
+				sigList[i] = MinHash2.signature(signatureSize, userList.size(), skillsDocList.get(i));
 				
 			}
-			
-			System.out.println(MinHash.similarity(sigList[0], sigList[1]));
+			System.out.println(Arrays.toString(skillsDoc.toArray()));
+			System.out.println(Arrays.toString(sigList));
+			int c = -1;
+			for (int[] sig : sigList)
+			{
+				c++;
+				System.out.println(Arrays.toString(sigList[c]));
+			}
+			System.out.println(Jaccard.getSimilarity(sigList[0],sigList[1]));
+			System.out.println(Arrays.toString(sigList[0]));
+			System.out.println(Arrays.toString(sigList[1]));			
 		}
 		
 		
