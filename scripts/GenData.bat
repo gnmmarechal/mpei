@@ -1,2 +1,2 @@
 @echo off
-java -jar MPEI_Project.jar GenData
+java -cp MPEI_Project.jar GenData

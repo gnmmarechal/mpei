@@ -1,4 +1,5 @@
 // https://github.com/tdebatty/java-LSH
+// Não utilizado pelo programa, foi inicialmente usado para testes mas foi removido depois da nossa própria implementação de MinHash (MinHash2).
 package info.debatty.java.lsh;
 
 import java.io.Serializable;

@@ -1,4 +1,4 @@
-Average Skill Number:,8.757847533632287,Job:,T
+Average Skill Number:,8.747747747747749,Job:,T
 ID,NAME,SKILL NAMES, EDUCATION LEVEL, AGE, PHONE NUMBER
 386,Sherlene Driver Simon,BSD;Bass;C#;Drums;Graphical Design;Korean;Linux;Mathematics;PR;Portuguese;Server Maintenance;Unix;Writing,Doctorate,20,120784464
 394,Margy,BSD;Bass;C#;C++;English;Japanese;Korean;Lua;MIPS Assembly;PR;Plumbing;Python;Soldering,Doctorate,25,417031861
@@ -37,7 +37,6 @@ ID,NAME,SKILL NAMES, EDUCATION LEVEL, AGE, PHONE NUMBER
 519,Threet Kari,Architecture;Bass;Biology;Esperanto;Java;Lua;Mathematics;Portuguese;Reading;Server Maintenance;Violin,Doctorate,22,663365147
 793,Sapien Buss,Architecture;Ballet;Bass;English;Java;Journalism;MIPS Assembly;Mathematics;Police;Server Maintenance;Writing,Master's Degree,21,424579003
 235,Deidre Ammerman Eccles Lettie,Bash;Bass;C;Esperanto;Guitar;Japanese;Network Security;PR;Portuguese;Spanish;Windows,Bachelor's Degree,22,529869993
-595,Aletha Renee,Architecture;BSD;Ballet;Bash;Bass;C;C++;Network Security;Octave;Speaking;Windows,Bachelor's Degree,25,483653030
 643,Kerney,Bass;Biology;English;Graphical Design;Japanese;Orchestra;Police;Server Maintenance;Soldering;Unix;Windows,Bachelor's Degree,19,227819834
 28,Driver Sleeper,Architecture;Ballet;Bass;Graphical Design;Korean;Lua;Objective C;Octave;Python;Spanish;Translation,High School,27,535832233
 197,Duplantis Lettie Risch An,BSD;Bash;Bass;Esperanto;Journalism;Linux;Network Security;Objective C;Portuguese;Server Maintenance;Soldering,High School,21,689674237

@@ -1,2 +1,2 @@
 @echo off
-java -jar MPEI_Project.jar Test
+java -cp MPEI_Project.jar Test

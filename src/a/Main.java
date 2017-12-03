@@ -383,6 +383,8 @@ public class Main
 				log("Error printing data! : " + e.getMessage());
 			}			
 		}
+		log("=====DONE=====");
+		System.in.read();
 	}
 	
 	public static void log(Object args)
