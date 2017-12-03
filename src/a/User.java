@@ -159,6 +159,7 @@ public class User
 		return tempArray;
 	}
 	
+	
 	public String toString()
 	{
 		String skillIDString = "";

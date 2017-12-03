@@ -39,14 +39,16 @@ public class Main
 		
 		List<List<User>> similarityOrderedMatchList = new ArrayList<List<User>>();
 		
-
+		List<Integer> ogUserNo = new ArrayList<Integer>();
 		for (Job job : jobList)
 		{
 			List<User> userList = new ArrayList<User>();
+			
 			for (User u : userListFinal)
 			{
 				userList.add(u);
 			}
+			ogUserNo.add(userList.size());
 			// Find perfect matches for the job (first find minimum matches and then perfect matches. This eliminates all users that aren't necessary)
 			log("Job : " + job.getTitle() + "\nIdeal Skillset : " + Arrays.toString(job.idealUser.getSkills().toArray()));
 			log("=====Perfect Match Search=====");
@@ -247,6 +249,140 @@ public class Main
 			similarityOrderedMatchList.add(userList);
 		}
 		
+		// Write to file
+		for (int i = 0; i < jobList.size(); i++)
+		{
+			Job job = jobList.get(i);
+			log("=====Printing Data to CSV File=====");
+			log("Original User List Size: " + ogUserNo.get(i));
+			int pSize = perfectJobMatchList.get(i).size();
+			int rSize = similarityOrderedMatchList.get(i).size();
+			double rPercent = 0;
+			double pPercent = 0;
+			if (pSize != 0)
+				pPercent = 100 * (double) pSize/ (double) ogUserNo.get(i);
+			if (rSize != 0)
+				rPercent = 100 * (double) (rSize + pSize)/ (double) ogUserNo.get(i);
+			log("Relevant Users: " + String.valueOf(rSize+pSize) + " (" + rPercent + "%)\nPerfect Users: " + pSize + " (" + pPercent + "%)");
+			String jobFileNameA = job.getTitle() + "_perfect.csv";
+			File jobFileA = new File(jobFileNameA);
+			String jobFileNameB = job.getTitle() + ".csv";
+			File jobFileB = new File(jobFileNameB);
+			log("File Name: " + jobFileNameA);
+			try
+			{
+				List<String> toWriteA = new ArrayList<String>();
+				toWriteA.add("ID,NAME,SKILL NAMES, EDUCATION LEVEL, AGE, PHONE NUMBER");
+				double pSkillNo = 0;
+				for (User u : perfectJobMatchList.get(i))
+				{
+					pSkillNo += u.skillIDs.size();
+					Long time= System.currentTimeMillis() / 1000 - u.userBirthdate;
+					int years = Math.round(time) / 31536000;
+					String[] skillArr = u.getSkills(skillListArray);
+					String sk = "";
+					for (int j = 0; j < u.skillIDs.size(); j++)
+					{
+						sk += skillArr[j];
+						if (j < skillArr.length - 1)
+							sk+= ";";
+					}
+					
+					String edLev = "";
+					switch(u.educationLevelID)
+					{
+						case 0:
+							edLev = "None";
+							break;
+						case 1:
+							edLev = "Primary School";
+							break;
+						case 2:
+							edLev = "High School";
+							break;
+						case 3:
+							edLev = "Bachelor's Degree";
+							break;
+						case 4:
+							edLev = "Master's Degree";
+							break;
+						case 5:
+							edLev = "Doctorate";
+							break;
+					}
+					toWriteA.add(u.userID + "," + u.userName + "," + sk + "," + edLev + "," + years + "," + u.phoneNumber);
+				}
+				if (pSkillNo != 0)
+				{
+					pSkillNo = (double) pSkillNo / (double) perfectJobMatchList.get(i).size();
+				}
+				List<String> toWriteAA = new ArrayList<String>();
+				toWriteAA.add("Average Skill Number:," + pSkillNo + ",Job:," + job.getTitle());
+				printFile(jobFileA, toWriteAA);
+				addToFile(jobFileA, toWriteA);
+					
+			} catch (Exception e)
+			{
+				log("Error printing data! : " + e.getMessage());
+			}
+			log("File Name: " + jobFileNameB);			
+			try
+			{
+				List<String> toWriteB = new ArrayList<String>();
+				toWriteB.add("ID,NAME,SKILL NAMES, EDUCATION LEVEL, AGE, PHONE NUMBER");
+				double pSkillNo = 0;
+				for (User u : similarityOrderedMatchList.get(i))
+				{
+					pSkillNo += u.skillIDs.size();
+					Long time= System.currentTimeMillis() / 1000 - u.userBirthdate;
+					int years = Math.round(time) / 31536000;
+					String[] skillArr = u.getSkills(skillListArray);
+					String sk = "";
+					for (int j = 0; j < u.skillIDs.size(); j++)
+					{
+						sk += skillArr[j];
+						if (j < skillArr.length - 1)
+							sk+= ";";
+					}
+					
+					String edLev = "";
+					switch(u.educationLevelID)
+					{
+						case 0:
+							edLev = "None";
+							break;
+						case 1:
+							edLev = "Primary School";
+							break;
+						case 2:
+							edLev = "High School";
+							break;
+						case 3:
+							edLev = "Bachelor's Degree";
+							break;
+						case 4:
+							edLev = "Master's Degree";
+							break;
+						case 5:
+							edLev = "Doctorate";
+							break;
+					}
+					toWriteB.add(u.userID + "," + u.userName + "," + sk + "," + edLev + "," + years + "," + u.phoneNumber);
+				}
+				if (pSkillNo != 0)
+				{
+					pSkillNo = (double) pSkillNo / (double) similarityOrderedMatchList.get(i).size();
+				}
+				List<String> toWriteBB = new ArrayList<String>();
+				toWriteBB.add("Average Skill Number:," + pSkillNo + ",Job:," + job.getTitle());
+				printFile(jobFileB, toWriteBB);
+				addToFile(jobFileB, toWriteB);
+					
+			} catch (Exception e)
+			{
+				log("Error printing data! : " + e.getMessage());
+			}			
+		}
 	}
 	
 	public static void log(Object args)
