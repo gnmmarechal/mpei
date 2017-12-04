@@ -52,7 +52,7 @@ public class GenData
 			// Skill IDs
 			// For now, skills range from 1 to 50
 			Random rand = new Random();
-			int skillAmount = rand.nextInt(14);
+			int skillAmount = rand.nextInt(35);
 			User tempUser = new User(skillAmount);
 			for (int i = 0; i < skillAmount; i++)
 			{
